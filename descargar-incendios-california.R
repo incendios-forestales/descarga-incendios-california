@@ -92,7 +92,7 @@ COLUMN_PREFIXES <- c(
 
 # Funciones de agregación
 AGGREGATE_FUNCTIONS <- c(
-  "min", "max", "mean"
+  "mean"
 )
 
 # Reglas de conversión de unidades
@@ -127,14 +127,13 @@ where_clause <- sprintf(
   year_end
 )
 
-# (Re)crear subdirectorios limpios en cada ejecución
-invisible(sapply(
-  c(dir_tmp, dir_out),
-  function(x) {
-    if (dir.exists(x)) unlink(x, recursive = TRUE, force = TRUE)
-    dir.create(x, recursive = TRUE)
-  }
-))
+# Inicialización de directorios (NO borrar salidas/)
+# Limpia solo el tmp del año actual (tmp/<label>) si existe.
+if (dir.exists(dir_tmp)) unlink(dir_tmp, recursive = TRUE, force = TRUE)
+dir.create(dir_tmp, recursive = TRUE, showWarnings = FALSE)
+
+# Asegurar que 'salidas/' exista, pero sin borrarla
+if (!dir.exists(dir_out)) dir.create(dir_out, recursive = TRUE, showWarnings = FALSE)
 
 # Obtener el polígono de California
 us_states <- ne_states(
